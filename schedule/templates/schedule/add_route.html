@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <label for="route_name">Назва маршруту:</label>
+            <input type="text" name="route_name" required>
+            <div>       
+                <button type="submit">Додати маршрут</button>
+                <button type="button" onclick="window.location.href='{% url 'schedule_list' %}'" class="btn btn-secondary">Скасувати</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

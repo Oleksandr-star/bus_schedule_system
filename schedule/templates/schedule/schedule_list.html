@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Розклад руху автобусів</h1>
+    <form method="GET" class="filters">
+        <div>
+            <label for="route">Маршрут:</label>
+            <select name="route" id="route">
+                <option value="">Всі маршрути</option>
+                {% for route in routes %}
+                    <option value="{{ route.id }}">{{ route.number }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Фільтрувати</button>
+        </div>
+        
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Маршрут</th>
+                <th>Час відправлення</th>
+                <th>Час прибуття</th>
+                <th>Зупинки</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for schedule in schedules %}
+                <tr>
+                    <td>{{ schedule.route }}</td>
+                    <td>{{ schedule.departure_time|time:"h:i A" }}</td>
+                    <td>{{ schedule.arrival_time|time:"h:i A" }}</td>
+                    <td>
+                        {% if schedule.stops.all %}
+                            {{ schedule.stops.all|join:", " }}
+                        {% else %}
+                            Немає зупинок
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{% url 'edit_schedule' schedule.id %}" method="get" style="display:inline;">
+                            <button type="submit" class="edit">Редагувати</button>
+                        </form>
+                        <form action="{% url 'delete_schedule' schedule.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="delete">Видалити</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+</div>
+{% endblock %}

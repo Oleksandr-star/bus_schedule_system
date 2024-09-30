@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Додати новий розклад</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="route">Маршрут:</label>
+                <select id="route" name="route" required>
+                    <option value="">Оберіть маршрут</option>
+                    {% for route in routes %}
+                        <option value="{{ route.id }}" {% if schedule and route.id == schedule.route.id %}selected{% endif %}>
+                            {{ route.number }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="departure_time">Час відправлення:</label>
+                <input type="time" id="departure_time" name="departure_time" value="{{ schedule.departure_time|default_if_none:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="arrival_time">Час прибуття:</label>
+                <input type="time" id="arrival_time" name="arrival_time" value="{{ schedule.arrival_time|default_if_none:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="stops">Оберіть зупинки:</label>
+                <select name="stops[]" id="stops" multiple required>
+                    {% for stop in stops %}
+                        <option value="{{ stop.id }}" {% if schedule and stop in schedule.stops.all %}selected{% endif %}>
+                            {{ stop.location }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>       
+                <button type="submit">Додати розклад</button>
+                <button type="button" onclick="window.location.href='{% url 'schedule_list' %}'" class="btn btn-secondary">Скасувати</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

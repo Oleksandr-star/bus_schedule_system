@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Додати нову зупинку</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="location">Локація зупинки:</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+            <div>       
+                <button type="submit">Додати зупинку</button>
+                <button type="button" onclick="window.location.href='{% url 'schedule_list' %}'" class="btn btn-secondary">Скасувати</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

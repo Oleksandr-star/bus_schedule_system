@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>{% if schedule %}Редагувати розклад{% else %}Додати новий розклад{% endif %}</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="route">Маршрут:</label>
+                <select id="route" name="route" required>
+                    <option value="">Оберіть маршрут</option>
+                    {% for route in routes %}
+                        <option value="{{ route.id }}" {% if schedule and route.id == schedule.route.id %}selected{% endif %}>
+                            {{ route.number }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="departure_time">Час відправлення:</label>
+                <input type="time" id="departure_time" name="departure_time" value="{% if schedule %}{{ schedule.departure_time|time:'H:i' }}{% endif %}" required>
+            </div>
+            <div class="form-group">
+                <label for="arrival_time">Час прибуття:</label>
+                <input type="time" id="arrival_time" name="arrival_time" value="{% if schedule %}{{ schedule.arrival_time|time:'H:i' }}{% endif %}" required>
+            </div>
+            <div class="form-group">
+                <label for="stops">Оберіть зупинки:</label>
+                <select name="stops" id="stops" multiple>
+                    {% for stop in stops %}
+                        <option value="{{ stop.id }}" {% if stop in schedule.stops.all %}selected{% endif %}>{{ stop.location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>       
+                <button type="submit">{% if schedule %}Зберегти зміни{% else %}Додати розклад{% endif %}</button>
+                <button type="button" onclick="window.location.href='{% url 'schedule_list' %}'" class="btn btn-secondary">Скасувати</button>
+            </div>
+            
+        </form>
+    </div>
+{% endblock %}
